@@ -86,6 +86,35 @@
         
         <div class="lg:col-span-4 flex flex-col gap-6">
             
+            <div class="glass-panel p-6">
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 border-b border-slate-700 pb-3">
+                    <i class="ph ph-graduation-cap text-teal-400"></i> Datos del Proyecto
+                </h2>
+                <div class="mb-4">
+                    <p class="text-[10px] text-slate-400 uppercase font-semibold tracking-wider mb-1">Universidad</p>
+                    <p class="text-sm font-bold text-white bg-slate-800/40 p-2 rounded border border-slate-700/50">
+                        [Insertar Nombre de la Universidad]
+                    </p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-slate-400 uppercase font-semibold tracking-wider mb-2">Integrantes</p>
+                    <ul class="text-xs space-y-2 text-slate-200 font-mono">
+                        <li class="flex items-center gap-2 bg-slate-800/20 p-1.5 rounded border border-slate-700/30">
+                            <i class="ph ph-user-circle text-slate-400 text-base"></i>
+                            GUTIÉRREZ VÁSQUEZ, Miguel Ángel
+                        </li>
+                        <li class="flex items-center gap-2 bg-slate-800/20 p-1.5 rounded border border-slate-700/30">
+                            <i class="ph ph-user-circle text-slate-400 text-base"></i>
+                            GÓMEZ CHOCCE, Gian Américo
+                        </li>
+                        <li class="flex items-center gap-2 bg-slate-800/20 p-1.5 rounded border border-slate-700/30">
+                            <i class="ph ph-user-circle text-slate-400 text-base"></i>
+                            OCHANTE FERNÁNDEZ, Paul André
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
             <div class="glass-panel p-6 flex-1">
                 <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 border-b border-slate-700 pb-3">
                     <i class="ph ph-sliders text-blue-400"></i> Parámetros de Simulación
@@ -337,7 +366,6 @@
             }
 
             // Dibujar Estructura (Pagoda)
-            // Color base: verde agua oscuro/cristalino característico del Taipei 101
             
             // Base
             ctx.fillStyle = '#0f766e'; // teal oscuro
@@ -497,29 +525,27 @@
             }
         });
 
+        // Actualización de datos de gráfica
         function updateChart() {
-            // Empujar nuevos datos
             dataEdificio.push(state[0]);
             dataEdificio.shift();
 
             if (isTMDActive) {
                 dataAMS.push(state[2]);
             } else {
-                dataAMS.push(null); // No dibujar línea si está desactivado
+                dataAMS.push(null);
             }
             dataAMS.shift();
 
-            chart.update(); // Sin parámetros extra, la animación está en false globalmente
+            chart.update();
         }
 
         // --- BUCLE PRINCIPAL ---
         function animate() {
             stepRK4();
             
-            // Dibujo de física
             drawTaipei(ctxObj, canvasObj.width/2, canvasObj.height - 20, state[0], state[2]);
             
-            // Actualizar gráfica cada 2 frames para optimizar
             if(Math.floor(time/dt) % 2 === 0) {
                 updateChart();
             }
@@ -556,16 +582,14 @@
         tmdToggle.addEventListener('change', (e) => {
             isTMDActive = e.target.checked;
             
-            // Reseteo suave del péndulo al estado del edificio
             if(isTMDActive) {
                 state[2] = state[0];
                 state[3] = state[1];
             } else {
-                // Borrar línea amarilla de la gráfica instántaneamente
                 for(let i=0; i<dataAMS.length; i++) dataAMS[i] = null;
                 metricRed.innerText = "N/A";
             }
-            maxAmpCurrent = 0; // Resetear métrica al cambiar estado
+            maxAmpCurrent = 0;
         });
 
         btnReset.addEventListener('click', () => {
